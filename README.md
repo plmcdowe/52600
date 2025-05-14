@@ -288,8 +288,12 @@ I elected to export the PCAP as JSON and simply parse the captures by *key*:*val
 >>                 examiner_writer.writerow([f'{http_req_uri}'])
 >> ```
 >> 
-> <b><ins>A tkinter filedialog prompts the user to open the JSON PCAP file,      
->    then lists check-boxes, allowing the user to select what functions to run, and wether to run again when complete</ins>:</b>
+> <b><ins>A tkinter filedialog</ins>:
+>> \- Prompts the user to open the JSON PCAP file,      
+>> \- Then lists check-boxes, allowing the user to:    
+>>> \+ select what functions to run,    
+>>> \+ and wether to run again when complete</b>   
+>>
 >> ```python
 >> def main():
 >>     root = tk.Tk()
