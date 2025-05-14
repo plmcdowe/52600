@@ -648,8 +648,7 @@ I elected to export the PCAP as JSON and simply parse the captures by *key*:*val
 >>         $("body").append(container);});
 >> </script>
 >> ```
+> ![Bungle](https://github.com/user-attachments/assets/731a28f9-9508-4d05-9911-e495975e1c74)    
 >    
->
-
 ### [cors_server.py](https://github.com/plmcdowe/52600/blob/ed4b61dbb8067082c3c6ec5d86f9f5ef0145be79/2b-SQL-XSS-CSRF/cors_server.py)
 ### [csrf_0.html](https://github.com/plmcdowe/52600/blob/ed4b61dbb8067082c3c6ec5d86f9f5ef0145be79/2b-SQL-XSS-CSRF/csrf_0.html)
