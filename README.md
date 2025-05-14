@@ -545,14 +545,14 @@ I elected to export the PCAP as JSON and simply parse the captures by *key*:*val
 >> ```
 >
 > **From: [/manual/function.md5.php](https://www.php.net/manual/en/function.md5.php) I learned that `md5( ,true);` returns "the md5 digest in raw binary format."**    
-> **Raw binary can contain any byte value, meaning that a particular hash may contain a certain, desired substring.**
+> **Raw binary can contain any byte value!     
+> Meaning that a particular hash may contain a certain, desired substring.**
 >> ```python
 >>        m.update(str(str_in).encode())
 >>        
 >>        d = m.digest() # `digest()` returns the bytes object "digest" from `update()` containing binary encoded hexadecimal characters.
 >> ```
-> **I had no clue how long it would take to iterate hashes until the raw binary contained a valid injection substring -**     
-> **but I did know that the shorter I could make it, the better - so:**     
+> **I had no clue how long it would take to iterate hashes until the raw binary contained a valid injection substring - but I did know that the shorter I could make it, the better, so:**     
 >
 > **Starting with: `'OR "1"="1"'` then a few (many) rounds of blind elimination -**    
 > **I determined that '=' was the smallest inject in sql_0 that I could sign in as victim.**     
