@@ -1,6 +1,6 @@
 # Project highlights from 52600
-## 📂 [\[ 1 \] C Vulnerabilities](https://github.com/plmcdowe/52600/tree/f359f56ece8bba40cd979996ab1ae614025c0368/1-C-Vulnerabilities)
-### 🚧
+## 🚧📂 [\[ 1 \] C Vulnerabilities](https://github.com/plmcdowe/52600/tree/f359f56ece8bba40cd979996ab1ae614025c0368/1-C-Vulnerabilities)
+##
 ## 📂 [\[ 2a \] JSON PCAP Parser](https://github.com/plmcdowe/52600/tree/f359f56ece8bba40cd979996ab1ae614025c0368/2a-JSON-PCAP-Parser)
 Due to the nature of the assignment, there are two separate files: <i>part1.py</i> and <i>part2.py</i>.    
 They could easily be combined and extended to handle other cases.    
